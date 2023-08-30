@@ -19,6 +19,12 @@ h2 {
   margin-top: 20px;
 }
 
+ul {
+  position: absolute;
+  top: 30%;
+  left: 20%;
+}
+
 .add-form {
   position: absolute;
   top: 120px;
