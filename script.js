@@ -1,51 +1,16 @@
-const addForm = document.querySelector(".add-form");
-const searchForm = document.querySelector(".search-form");
-const input = document.querySelector("input");
-const submitBtn = document.querySelector("button.submitBtn");
+const addFormInput = document.querySelector(".add-form input");
+const submitBtn = document.querySelector(".submitBtn");
 const ul = document.querySelector("ul");
-const listItems = document.querySelectorAll("li");
-const tasksNumber = document.querySelector("h2 span");
-
-const tasksList = [];
-
-const renderList = () => {
-  ul.textContent = "";
-  tasksList.forEach((element, key) => {
-    element.dataset.key = key;
-    ul.appendChild(element);
-  });
-};
-const removeTask = (e) => {
-  e.target.parentNode.remove();
-  const index = e.target.parentNode.dataset.key;
-  tasksList.splice(index, 1);
-  tasksNumber.textContent = listItems.length;
-  renderList();
-};
+const taskCount = document.querySelector("h2 span");
+const liItems = document.querySelectorAll("li");
 
 const addTask = (e) => {
   e.preventDefault();
-  const givenTask = input.value;
-  if (givenTask === "") return;
-  const task = document.createElement("li");
-  task.className = "task";
-  task.innerHTML = givenTask + `<button>Delete</button>`;
-  tasksList.push(task);
-  ul.appendChild(task);
-  input.value = "";
-  task.querySelector("button").addEventListener("click", removeTask);
-  tasksNumber.textContent = listItems.length;
-  renderList();
+  const newTask = addFormInput.value;
+  const li = document.createElement("li");
+  li.innerHTML = newTask + "<button>delete</button>";
+  ul.appendChild(li);
+  taskCount.textContent = liItems.length;
 };
 
-addForm.addEventListener("submit", addTask);
-
-const searchTask = (e) => {
-  const query = e.target.value.toLowerCase();
-  let tasks = [...listItems];
-  ul.textContent = "";
-  tasks = tasks.filter((li) => li.textContent.toLowerCase().includes(query));
-  tasks.forEach((li) => ul.appendChild(li));
-};
-
-searchForm.addEventListener("input", searchTask);
+submitBtn.addEventListener("click", addTask);
