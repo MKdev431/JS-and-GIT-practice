@@ -3,26 +3,49 @@ const searchForm = document.querySelector(".search-form");
 const input = document.querySelector("input");
 const submitBtn = document.querySelector("button.submitBtn");
 const ul = document.querySelector("ul");
-const listItems = document.getElementsByClassName("task");
-const h2 = document.querySelector("h2 span");
+const listItems = document.querySelectorAll("li");
+const tasksNumber = document.querySelector("h2 span");
 
-const taskList = [];
+const tasksList = [];
 
+const renderList = () => {
+  ul.textContent = "";
+  tasksList.forEach((element, key) => {
+    element.dataset.key = key;
+    ul.appendChild(element);
+  });
+};
 const removeTask = (e) => {
   e.target.parentNode.remove();
-  h2.textContent = listItems.length;
+  const index = e.target.parentNode.dataset.key;
+  tasksList.splice(index, 1);
+  tasksNumber.textContent = listItems.length;
+  renderList();
 };
 
-addForm.addEventListener("submit", function (e) {
+const addTask = (e) => {
   e.preventDefault();
   const givenTask = input.value;
   if (givenTask === "") return;
-  taskList.push(givenTask);
   const task = document.createElement("li");
-  task.innerHTML = givenTask + `<button>Delete</button>`;
   task.className = "task";
+  task.innerHTML = givenTask + `<button>Delete</button>`;
+  tasksList.push(task);
   ul.appendChild(task);
   input.value = "";
-  task.addEventListener("click", removeTask);
-  h2.textContent = listItems.length;
-});
+  task.querySelector("button").addEventListener("click", removeTask);
+  tasksNumber.textContent = listItems.length;
+  renderList();
+};
+
+addForm.addEventListener("submit", addTask);
+
+const searchTask = (e) => {
+  const query = e.target.value.toLowerCase();
+  let tasks = [...listItems];
+  ul.textContent = "";
+  tasks = tasks.filter((li) => li.textContent.toLowerCase().includes(query));
+  tasks.forEach((li) => ul.appendChild(li));
+};
+
+searchForm.addEventListener("input", searchTask);
