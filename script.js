@@ -1,24 +1,41 @@
 const addFormInput = document.querySelector(".add-form input");
-const searchForm = document.querySelector(".search-form input");
+const searchFormInput = document.querySelector(".search-form input");
 const submitBtn = document.querySelector(".submitBtn");
 const ul = document.querySelector("ul");
 const taskCount = document.querySelector("h2 span");
-const liItems = document.getElementsByClassName("task");
+const taskList = [];
+
+const renderList = () => {
+  ul.textContent = "";
+  taskList.forEach((element, index) => {
+    element.dataset.id = index;
+    ul.appendChild(element);
+  });
+};
 
 const searchTask = (e) => {
   e.preventDefault();
+  searchFormInput.addEventListener("keydown", (e) => {
+    if (e.keyCode === 8) {
+      taskList.forEach((task) => {
+        ul.appendChild(task);
+      });
+    }
+  });
   const inputText = e.target.value.toLowerCase();
-  let tasks = [...liItems];
-  tasks = tasks.filter((index) => index.textContent.toLowerCase().includes(inputText));
+  // const tasks = [...liItems];
+  const newTasks = taskList.filter((index) => index.textContent.toLowerCase().includes(inputText));
   ul.textContent = "";
   // console.log(tasks);
-  tasks.forEach((index) => ul.appendChild(index));
-  taskCount.textContent = liItems.length;
+  newTasks.forEach((index) => ul.appendChild(index));
+  taskCount.textContent = taskList.length;
 };
 
 const removeTask = (e) => {
-  e.target.parentNode.remove();
-  taskCount.textContent = liItems.length;
+  const dataKey = e.target.parentNode.dataset.key;
+  taskList.splice(dataKey, 1);
+  taskCount.textContent = taskList.length;
+  renderList();
 };
 
 const addTask = (e) => {
@@ -28,12 +45,14 @@ const addTask = (e) => {
   const li = document.createElement("li");
   li.innerHTML = newTask + "<button>delete</button>";
   li.className = "task";
-  // tasks.push(li);
+  taskList.push(li);
+  renderList();
   ul.appendChild(li);
   addFormInput.value = "";
+  searchFormInput.value = "";
   taskCount.textContent = document.querySelectorAll("li.task").length;
   li.querySelector("button").addEventListener("click", removeTask);
 };
 
 submitBtn.addEventListener("click", addTask);
-searchForm.addEventListener("input", searchTask);
+searchFormInput.addEventListener("input", searchTask);
